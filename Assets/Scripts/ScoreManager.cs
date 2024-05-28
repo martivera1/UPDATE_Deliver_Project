@@ -10,6 +10,7 @@ public class ScoreManager : MonoBehaviour
 
     public delegate void ScoreChangedHandler(int playerNumber, int newScore);
     public static event ScoreChangedHandler OnScoreChanged;
+    public static event System.Action OnCooperativePlayStart;
 
     public static void AddScore(int playerNumber, int points)
     {
@@ -24,6 +25,11 @@ public class ScoreManager : MonoBehaviour
             player2Score += points;
             //Debug.Log("Player 2 Score: " + player2Score);
             OnScoreChanged?.Invoke(2, player2Score);
+        }
+
+        if (player1Score == 800 && player2Score == 800)
+        {
+            OnCooperativePlayStart?.Invoke();
         }
     }
 }

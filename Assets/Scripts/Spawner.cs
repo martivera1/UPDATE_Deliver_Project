@@ -7,21 +7,12 @@ public class Spawner : MonoBehaviour
     //public GameObject myPrefab;
     public GameObject lhsPrefab;
     public GameObject rhsPrefab;
-    public Vector3 spawnPosition = new Vector3(75.0f, 0.0f, 25.0f);
-    public Vector3 spawnRotation = new Vector3(100, 0, 0);
+    public GameObject cooperativeArrowPrefab;
+    //public Vector3 spawnPosition = new Vector3(75.0f, 0.0f, 25.0f);
+    //public Vector3 spawnRotation = new Vector3(100, 0, 0);
 
     private Vector3 nextSpawnPosition;
 
-    /*    public Vector3[] spawnPositions = {
-            new Vector3(55.26f, -1.567744f, 26.0f),
-            new Vector3(65.4f, -1.567744f, 35.0f),
-            new Vector3(85.0f, -1.567744f, 25.0f),
-            new Vector3(85.0f, -1.567744f, 34.8f),
-            new Vector3(65.0f,-1.567744f, 54.2f),
-            new Vector3(74.4f, -1.567744f, 65.1f),
-            new Vector3(65.6f,-1.567744f, 64.3f),
-            new Vector3(65.6f,-1.567744f, 84.7f)
-        };*/
 
 
     public Vector3[] leftSpawnPositions = {
@@ -43,22 +34,27 @@ public class Spawner : MonoBehaviour
         new Vector3(65.0f, -1.567744f, 54.2f),
         new Vector3(74.4f, -1.567744f, 65.1f),
         new Vector3(65.6f, -1.567744f, 64.3f),
-        new Vector3(65.6f, -1.567744f, 84.7f),
-        new Vector3(65.6f, -1.567744f, 94.7f)
+        new Vector3(65.6f, -1.567744f, 84.7f)
     };
     public Vector3[] spawnRotations = {
         new Vector3(90, 0, 0),
-        //new Vector3(90, 90, 0),
         new Vector3(90, 180, 0),
         new Vector3(90, 270, 0)
     };
 
-    /*    private int currentSpawnIndex = 0;
-        private int currentRotationIndex = 0;*/
+    public Vector3[] coopSpawnPositions = {
+        new Vector3(50.0f, -1.567f, 70.0f),
+        new Vector3(0.0f, 0.0f, 0.0f)
+    };
+
 
     private int currentLeftSpawnIndex = 0;
     private int currentRightSpawnIndex = 0;
+    private int currentCoopSpawnIndex = 0;
     private int currentRotationIndex = 0;
+
+    private bool spawnCoopArrowsOnly = false;
+
 
     // Event for arrow destruction
     public static event System.Action<string> OnArrowDestroyed;
@@ -67,13 +63,11 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         Collision_with_arrow.OnArrowDestroyed += HandleArrowDestroyed;
-
-        // Initialize the next spawn position
-        //nextSpawnPosition = spawnPosition;
-        /*SpawnArrow();*/
+        ScoreManager.OnCooperativePlayStart += StartCooperativePlay;
 
         SpawnArrow("LHS");
         SpawnArrow("RHS");
+        //SpawnArrow("COOP");
 
     }
 
@@ -82,6 +76,7 @@ public class Spawner : MonoBehaviour
     {
         // Unsubscribe from the event when this object is destroyed to prevent memory leaks
         Collision_with_arrow.OnArrowDestroyed -= HandleArrowDestroyed;
+        ScoreManager.OnCooperativePlayStart -= StartCooperativePlay;
     }
 
 
@@ -90,42 +85,113 @@ public class Spawner : MonoBehaviour
         Vector3 spawnPosition;
         GameObject prefab;
 
+        if (spawnCoopArrowsOnly)
+        {
+            side = "COOP";
+        }
+
         if (side == "LHS")
         {
+            //if (currentLeftSpawnIndex >= leftSpawnPositions.Length)
+            //{
+            //    CheckCoopArrowsCondition();
+            //    return;
+            //}
+
+
+            if (currentLeftSpawnIndex >= leftSpawnPositions.Length)
+            {
+                return;
+            }
+
             spawnPosition = leftSpawnPositions[currentLeftSpawnIndex];
-            currentLeftSpawnIndex = (currentLeftSpawnIndex + 1) % leftSpawnPositions.Length;
+            //currentLeftSpawnIndex = (currentLeftSpawnIndex + 1) % leftSpawnPositions.Length; <-- perq mai s'acabin de generar fletxes
+            currentLeftSpawnIndex++;
             prefab = lhsPrefab;
         }
-        else // RHS
+        else if (side == "RHS") // RHS
         {
+            //if (currentRightSpawnIndex >= rightSpawnPositions.Length)
+            //{
+            //    CheckCoopArrowsCondition();
+            //    return;
+            //}
+
+            if (currentRightSpawnIndex >= rightSpawnPositions.Length)
+            {
+                return;
+            }
+
             spawnPosition = rightSpawnPositions[currentRightSpawnIndex];
-            currentRightSpawnIndex = (currentRightSpawnIndex + 1) % rightSpawnPositions.Length;
+            //currentRightSpawnIndex = (currentRightSpawnIndex + 1) % rightSpawnPositions.Length;
+            currentRightSpawnIndex++;
             prefab = rhsPrefab;
+        }
+
+        else // COOP
+        {
+            //if (currentCoopSpawnIndex >= coopSpawnPositions.Length)
+            //{
+            //    return;
+            //}
+
+            spawnPosition = coopSpawnPositions[currentCoopSpawnIndex];
+            //currentCoopSpawnIndex = (currentCoopSpawnIndex + 1) % coopSpawnPositions.Length ;
+            prefab = cooperativeArrowPrefab;
         }
 
         Vector3 spawnRotation = spawnRotations[currentRotationIndex];
         Quaternion rotation = Quaternion.Euler(spawnRotation);
         Instantiate(prefab, spawnPosition, rotation);
+        Debug.Log("Spawned a " + side + " arrow at " + spawnPosition);
 
         currentRotationIndex = (currentRotationIndex + 1) % spawnRotations.Length;
     }
-    
+
+    //void CheckCoopArrowsCondition()
+    //{
+    //    // Check if both left and right spawn indices have reached the maximum length
+    //    if ((currentLeftSpawnIndex == leftSpawnPositions.Length) && (currentRightSpawnIndex == rightSpawnPositions.Length))
+    //    {
+    //        spawnCoopArrowsOnly = true;
+    //        SpawnArrow("COOP");
+    //    }
+    //}
+
+    void StartCooperativePlay()
+    {
+        Debug.Log("Received cooperative play start event");
+        spawnCoopArrowsOnly = true;
+        SpawnArrow("COOP");
+    }
+
 
 
     void HandleArrowDestroyed(string side)
     {
-        // Check if the destroyed arrow was on the LHS
-        if (side == "LHS")
+
+    
+        if (side == "LHS" && !spawnCoopArrowsOnly)
         {
-            // Spawn a new arrow on the LHS
-            SpawnArrow("LHS");
+                SpawnArrow("LHS");
+
         }
-        else
+
+        else if(side == "RHS" && !spawnCoopArrowsOnly)
         {
-            // Spawn a new arrow on the RHS
             SpawnArrow("RHS");
         }
+
+        else if (spawnCoopArrowsOnly)
+        {
+            SpawnArrow("COOP");
+            return;
+        }
+
+        
+       
     }
 
+    
 
 }

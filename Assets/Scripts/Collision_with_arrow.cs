@@ -10,7 +10,9 @@ public class Collision_with_arrow : MonoBehaviour
     // Define an event using the delegate
     public static event ArrowDestroyedHandler OnArrowDestroyed;
 
-    void OnCollisionEnter(Collision collision)
+    private HashSet<int> playersCollided = new HashSet<int>();
+
+    /*void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Arrow"))
         {
@@ -29,9 +31,51 @@ public class Collision_with_arrow : MonoBehaviour
             // Destroy the arrow
             Destroy(collision.gameObject);
         }
+    }*/
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Arrow"))
+        {
+            string side = collision.gameObject.GetComponent<ArrowSide>().side;
+
+            if (side == "COOP")
+            {
+                PlayerController playerController = collision.gameObject.GetComponent<PlayerController>(); //original q funciona bé
+                //PlayerController playerController = collision.collider.GetComponent<PlayerController>(); chat nou
+                if (playerController != null)
+                {
+                    playersCollided.Add(playerController.playerNumber);
+
+                    if (playersCollided.Count == 2)
+                    {
+                        OnArrowDestroyed?.Invoke("COOP");
+                        Destroy(collision.gameObject);
+                    }
+                }
+            }
+            else
+            {
+                OnArrowDestroyed?.Invoke(side);
+
+                //PlayerController playerController = GetComponent<playerController>(); //original
+
+                PlayerController playerController = collision.collider.GetComponent<PlayerController>(); //chat
+
+                if (playerController != null)
+                {
+                    ScoreManager.AddScore(playerController.playerNumber, 100);
+                }
+
+                Destroy(collision.gameObject);
+            }
+        }
     }
 
-    void OnTriggerEnter(Collider other)
+
+
+
+    /*void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Arrow"))
         {
@@ -49,6 +93,44 @@ public class Collision_with_arrow : MonoBehaviour
 
             // Destroy the arrow
             Destroy(other.gameObject);
+        }
+    }*/
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Arrow"))
+        {
+            string side = other.gameObject.GetComponent<ArrowSide>().side;
+
+            if (side == "COOP")
+            {
+                PlayerController playerController = other.gameObject.GetComponent<PlayerController>(); //original
+                //PlayerController playerController = collision.collider.GetComponent<PlayerController>(); xat
+                if (playerController != null)
+                {
+                    playersCollided.Add(playerController.playerNumber);
+
+                    if (playersCollided.Count == 2)
+                    {
+                        OnArrowDestroyed?.Invoke("COOP");
+                        Destroy(other.gameObject);
+                    }
+                }
+            }
+            else
+            {
+                OnArrowDestroyed?.Invoke(side);
+
+                PlayerController playerController = GetComponent<PlayerController>(); //original
+                //PlayerController playerController = collision.collider.GetComponent<PlayerController>(); xat
+
+                if (playerController != null)
+                {
+                    ScoreManager.AddScore(playerController.playerNumber, 100);
+                }
+
+                Destroy(other.gameObject);
+            }
         }
     }
 }

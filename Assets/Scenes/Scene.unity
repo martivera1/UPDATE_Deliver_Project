@@ -7844,8 +7844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lhsPrefab: {fileID: 4131812904386865606, guid: 1c9eb11f5be17ce44830145dc610b377, type: 3}
   rhsPrefab: {fileID: 1524000045193608662, guid: a9c9e0c95e9557f4a9bc975eb156493c, type: 3}
-  spawnPosition: {x: 75, y: 0, z: 25}
-  spawnRotation: {x: 100, y: 0, z: 0}
+  cooperativeArrowPrefab: {fileID: 6537529040092933770, guid: dd6cf531a50a0df49bb5de4bda0d3494, type: 3}
   leftSpawnPositions:
   - {x: 44.74, y: -1.567744, z: 26}
   - {x: 34.6, y: -1.567744, z: 35}
@@ -7864,11 +7863,13 @@ MonoBehaviour:
   - {x: 74.4, y: -1.567744, z: 65.1}
   - {x: 65.6, y: -1.567744, z: 64.3}
   - {x: 65.6, y: -1.567744, z: 84.7}
-  - {x: 65.6, y: -1.567744, z: 94.7}
   spawnRotations:
   - {x: 90, y: 0, z: 0}
   - {x: 90, y: 180, z: 0}
   - {x: 90, y: 270, z: 0}
+  coopSpawnPositions:
+  - {x: 50, y: -1.567, z: 70}
+  - {x: 0, y: 0, z: 0}
 --- !u!4 &2012259396
 Transform:
   m_ObjectHideFlags: 0
