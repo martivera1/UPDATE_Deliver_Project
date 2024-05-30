@@ -41,8 +41,8 @@ public class Collision_with_arrow : MonoBehaviour
 
             if (side == "COOP")
             {
-                PlayerController playerController = collision.gameObject.GetComponent<PlayerController>(); //original q funciona bé
-                //PlayerController playerController = collision.collider.GetComponent<PlayerController>(); chat nou
+                //PlayerController playerController = collision.gameObject.GetComponent<PlayerController>(); //original q funciona bé
+                PlayerController playerController = collision.collider.GetComponent<PlayerController>(); //aixo diu el xat perq vagi amb la coop
                 if (playerController != null)
                 {
                     playersCollided.Add(playerController.playerNumber);
@@ -104,7 +104,8 @@ public class Collision_with_arrow : MonoBehaviour
 
             if (side == "COOP")
             {
-                PlayerController playerController = other.gameObject.GetComponent<PlayerController>(); //original
+                PlayerController playerController = GetComponent<PlayerController>();
+                //PlayerController playerController = other.gameObject.GetComponent<PlayerController>(); //original
                 //PlayerController playerController = collision.collider.GetComponent<PlayerController>(); xat
                 if (playerController != null)
                 {
