@@ -44,7 +44,11 @@ public class Spawner : MonoBehaviour
 
     public Vector3[] coopSpawnPositions = {
         new Vector3(50.0f, -1.567f, 70.0f),
-        new Vector3(0.0f, 0.0f, 0.0f)
+        new Vector3(50.0f, 0.0f, 39.0f),
+        new Vector3(65.2f,0.0f, 15.8f),
+        new Vector3(80.0f, 0.0f, 40.5f),
+        new Vector3(20.4f, 0.0f, 40.5f)
+
     };
 
 
