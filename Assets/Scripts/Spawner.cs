@@ -148,15 +148,7 @@ public class Spawner : MonoBehaviour
         currentRotationIndex = (currentRotationIndex + 1) % spawnRotations.Length;
     }
 
-    //void CheckCoopArrowsCondition()
-    //{
-    //    // Check if both left and right spawn indices have reached the maximum length
-    //    if ((currentLeftSpawnIndex == leftSpawnPositions.Length) && (currentRightSpawnIndex == rightSpawnPositions.Length))
-    //    {
-    //        spawnCoopArrowsOnly = true;
-    //        SpawnArrow("COOP");
-    //    }
-    //}
+   
 
     void StartCooperativePlay()
     {
