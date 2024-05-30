@@ -136,7 +136,7 @@ public class Spawner : MonoBehaviour
             //}
 
             spawnPosition = coopSpawnPositions[currentCoopSpawnIndex];
-            //currentCoopSpawnIndex = (currentCoopSpawnIndex + 1) % coopSpawnPositions.Length ;
+            currentCoopSpawnIndex = (currentCoopSpawnIndex + 1) % coopSpawnPositions.Length ;
             prefab = cooperativeArrowPrefab;
         }
 
@@ -154,6 +154,7 @@ public class Spawner : MonoBehaviour
     {
         Debug.Log("Received cooperative play start event");
         spawnCoopArrowsOnly = true;
+        
         SpawnArrow("COOP");
     }
 
