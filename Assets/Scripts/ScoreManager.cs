@@ -27,7 +27,7 @@ public class ScoreManager : MonoBehaviour
             OnScoreChanged?.Invoke(2, player2Score);
         }
 
-        if (player1Score == 800 && player2Score == 800)
+        if (player1Score == 1000 && player2Score == 1000)
         {
             OnCooperativePlayStart?.Invoke();
         }
