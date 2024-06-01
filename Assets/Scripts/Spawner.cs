@@ -51,7 +51,7 @@ public class Spawner : MonoBehaviour
         new Vector3(90, 270, 0)
     };
 
-    public Vector3[] coopSpawnPositions = {
+    public static Vector3[] coopSpawnPositions = {
         new Vector3(55.8f, -1.567f, 75.4f),
         new Vector3(75.0f, 0.0f, 75.4f),
         new Vector3(75.0f, 0.0f, 55.2f),
@@ -93,7 +93,7 @@ public class Spawner : MonoBehaviour
 
     private int currentLeftSpawnIndex = 0;
     private int currentRightSpawnIndex = 0;
-    private int currentCoopSpawnIndex = 0;
+    public static int currentCoopSpawnIndex = 0;
     private int currentRotationIndex = 0;
 
     private bool spawnCoopArrowsOnly = false;
@@ -109,9 +109,14 @@ public class Spawner : MonoBehaviour
     {
         Collision_with_arrow.OnArrowDestroyed += HandleArrowDestroyed;
         ScoreManager.OnCooperativePlayStart += StartCooperativePlay;
+        Collision_with_arrow.OnLastCoopArrowDestroyed += EndCooperativePlay;
 
-        SpawnArrow("LHS");
-        SpawnArrow("RHS");
+        if (first_phase)
+        {
+            SpawnArrow("LHS");
+            SpawnArrow("RHS");
+        }
+        
         //SpawnArrow("COOP");
 
     }
@@ -122,13 +127,15 @@ public class Spawner : MonoBehaviour
         // Unsubscribe from the event when this object is destroyed to prevent memory leaks
         Collision_with_arrow.OnArrowDestroyed -= HandleArrowDestroyed;
         ScoreManager.OnCooperativePlayStart -= StartCooperativePlay;
+        Collision_with_arrow.OnLastCoopArrowDestroyed -= EndCooperativePlay;
+
     }
 
 
     void SpawnArrow(string side)
     {
-        Vector3 spawnPosition;
-        GameObject prefab;
+        Vector3 spawnPosition=Vector3.zero;
+        GameObject prefab=null;
 
         if (spawnCoopArrowsOnly)
         {
@@ -218,6 +225,16 @@ public class Spawner : MonoBehaviour
         SpawnArrow("COOP");
     }
 
+    void EndCooperativePlay()
+    {
+        // Cambia a la generación de flechas individuales
+        spawnCoopArrowsOnly = false;
+        second_phase = true;
+        currentLeftSpawnIndex = 0;
+        currentRightSpawnIndex = 0;
+        SpawnArrow("LHS");
+        SpawnArrow("RHS");
+    }
 
 
     void HandleArrowDestroyed(string side)
@@ -248,9 +265,12 @@ public class Spawner : MonoBehaviour
 
                 second_phase = true;
 
+                //SpawnArrow("LHS");
+
                 // Start spawning LHS and RHS arrows again
-                SpawnArrow("LHS");
-                SpawnArrow("RHS");
+                //SpawnArrow("LHS");
+                //SpawnArrow("RHS");
+
             }
         }
 

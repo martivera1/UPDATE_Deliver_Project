@@ -4563,7 +4563,7 @@ AudioSource:
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
-  Mute: 0
+  Mute: 1
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
@@ -8127,16 +8127,6 @@ MonoBehaviour:
   - {x: 90, y: 0, z: 0}
   - {x: 90, y: 180, z: 0}
   - {x: 90, y: 270, z: 0}
-  coopSpawnPositions:
-  - {x: 55.8, y: -1.567, z: 75.4}
-  - {x: 75, y: 0, z: 75.4}
-  - {x: 75, y: 0, z: 55.2}
-  - {x: 74.5, y: 0, z: 34.9}
-  - {x: 55.2, y: 0, z: 34.9}
-  - {x: 35.4, y: 0, z: 35.2}
-  - {x: 34.5, y: -1.567, z: 55.4}
-  - {x: 34.5, y: -1.567, z: 74.1}
-  - {x: 55.8, y: -1.567, z: 75.4}
   left2SpawnPositions:
   - {x: 75.1, y: 0, z: 75.4}
   - {x: 65.1, y: 0, z: 65.4}

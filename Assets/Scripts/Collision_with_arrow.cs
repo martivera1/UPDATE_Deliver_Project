@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Collision_with_arrow : MonoBehaviour
 {
@@ -12,6 +13,9 @@ public class Collision_with_arrow : MonoBehaviour
 
     private HashSet<int> playersCollided = new HashSet<int>();
     private int count_players_colliding;
+    public static event Action OnLastCoopArrowDestroyed;
+    private static int coopArrowsDestroyed = 0;
+
 
 
     void OnCollisionEnter(Collision collision)
@@ -33,7 +37,9 @@ public class Collision_with_arrow : MonoBehaviour
 
             if (side == "COOP")
             {
+
                 
+
                 PlayerController playerController = GetComponent<PlayerController>();
                 if (playerController != null)
                 {
@@ -47,10 +53,16 @@ public class Collision_with_arrow : MonoBehaviour
                         Destroy(arrow);
                         playersCollided.Clear(); // Reset the set for the next cooperative arrow
                         count_players_colliding = 0;
+                        coopArrowsDestroyed++;
                         Debug.Log("COOP arrow destroyed by both players.");
 
                         ScoreManager.AddScore(1, 50);
                         ScoreManager.AddScore(2, 50);
+
+                        if (coopArrowsDestroyed >= Spawner.coopSpawnPositions.Length)
+                        {
+                            OnLastCoopArrowDestroyed?.Invoke();
+                        }
 
 
                     }
