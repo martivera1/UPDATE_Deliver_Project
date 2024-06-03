@@ -8,8 +8,8 @@ public class Spawner : MonoBehaviour
     public GameObject rhsPrefab;
     public GameObject cooperativeArrowPrefab;
 
-    public AudioSource audioSource;
-    public AudioSource audioSource2;
+    public AudioSource DestroyArrowSource; //destroy arrows
+    public AudioSource TutorialAudioSource; //tutorial audio source
     public AudioClip arrowDestroyedSound;
     public AudioClip tutorialSound;
 
@@ -50,14 +50,10 @@ public class Spawner : MonoBehaviour
     new Vector3(65.6f, -1.567744f, 64.3f),  
     new Vector3(65.6f, -1.567744f, 74.3f),  
     new Vector3(65.6f, -1.567744f, 84.7f)   
-};
+    };
 
 
-    //public Vector3[] spawnRotations = {
-    //    new Vector3(90, 0, 0), //right
-    //    new Vector3(90, 180, 0), //left
-    //    new Vector3(90, 270, 0) //up
-    //};
+   
 
     public static Vector3[] coopSpawnPositions = {
         new Vector3(55.8f, -1.567f, 75.4f),
@@ -79,9 +75,16 @@ public class Spawner : MonoBehaviour
     new Vector3(45.1f, 0.0f, 45.4f),
     new Vector3(35.1f, 0.0f, 35.4f),
     new Vector3(25.1f, 0.0f, 25.4f),
-    new Vector3(15.1f, 0.0f, 15.4f) //last one
+    new Vector3(25.1f, 0.0f, 15.4f),
+    new Vector3(25.1f, 0.0f, 35.4f),
+    new Vector3(25.1f, 0.0f, 50.4f),
     
-};
+    //now they're at the center, starts static battle:
+    new Vector3(35.1f, 0.0f, 44.4f),
+    new Vector3(25.1f, 0.0f, 44.4f),
+    new Vector3(35.1f, 0.0f, 34.4f),
+    new Vector3(45.1f, 0.0f, 24.4f)
+    };
 
     public Vector3[] right2SpawnPositions = {
     new Vector3(35.3f, 0.0f, 75.4f),
@@ -90,15 +93,22 @@ public class Spawner : MonoBehaviour
     new Vector3(65.3f, 0.0f, 45.4f),
     new Vector3(75.3f, 0.0f, 35.4f),
     new Vector3(85.3f, 0.0f, 25.4f),
-    new Vector3(95.3f, 0.0f, 15.4f) //last one
-    
-};
+    new Vector3(95.3f, 0.0f, 15.4f),
+    new Vector3(95.3f, 0.0f, 35.4f),
+    new Vector3(95.3f, 0.0f, 50.4f),
+
+    //now they're at the center, starts another battle:
+    new Vector3(65.1f, 0.0f, 44.4f),
+    new Vector3(75.1f, 0.0f, 44.4f),
+    new Vector3(65.1f, 0.0f, 34.4f),
+    new Vector3(55.1f, 0.0f, 24.4f)
+    };
 
 
     private int currentLeftSpawnIndex = 0;
     private int currentRightSpawnIndex = 0;
     public static int currentCoopSpawnIndex = 0;
-    //private int currentRotationIndex = 0;
+    
 
     private bool spawnCoopArrowsOnly = false;
     private bool second_phase = false;
@@ -113,8 +123,8 @@ public class Spawner : MonoBehaviour
 
     void Start()
     {
-        audioSource2.clip = tutorialSound;
-        audioSource2.Play();
+        TutorialAudioSource.clip = tutorialSound;
+        TutorialAudioSource.Play();
 
         StartCoroutine(WaitForAudioToEnd());
     }
@@ -122,7 +132,7 @@ public class Spawner : MonoBehaviour
     private IEnumerator WaitForAudioToEnd()
     {
         // Esperar hasta que el audio termine de reproducirse
-        yield return new WaitWhile(() => audioSource2.isPlaying);
+        yield return new WaitWhile(() => TutorialAudioSource.isPlaying);
 
 
         ObjectSong.clip = song;
@@ -168,15 +178,6 @@ public class Spawner : MonoBehaviour
                 return;
             }
 
-
-
-            if (second_phase)
-            {
-                spawnPosition = left2SpawnPositions[currentLeftSpawnIndex];
-                currentLeftSpawnIndex++;
-                prefab = lhsPrefab;
-            }
-
             if (first_phase)
             {
                 spawnPosition = leftSpawnPositions[currentLeftSpawnIndex];
@@ -187,6 +188,21 @@ public class Spawner : MonoBehaviour
                 nextLeftSpawnIndex = (nextLeftSpawnIndex + 1) % leftSpawnPositions.Length;
 
             }
+
+            if (second_phase)
+            {
+
+                nextLeftSpawnIndex = 1;
+
+                spawnPosition = left2SpawnPositions[currentLeftSpawnIndex];
+                currentLeftSpawnIndex++;
+                prefab = lhsPrefab;
+
+                nextSpawnPosition = leftSpawnPositions[nextLeftSpawnIndex];
+                nextLeftSpawnIndex = (nextLeftSpawnIndex + 1) % leftSpawnPositions.Length;
+            }
+
+            
             
         }
         else if (side == "RHS") // RHS
@@ -194,13 +210,6 @@ public class Spawner : MonoBehaviour
             if (currentRightSpawnIndex >= rightSpawnPositions.Length)
             {
                 return;
-            }
-
-            if (second_phase)
-            {
-                spawnPosition = right2SpawnPositions[currentRightSpawnIndex];
-                currentRightSpawnIndex++;
-                prefab = rhsPrefab;
             }
 
             if (first_phase)
@@ -213,6 +222,20 @@ public class Spawner : MonoBehaviour
                 nextRightSpawnIndex = (nextRightSpawnIndex + 1) % rightSpawnPositions.Length;
 
             }
+
+            if (second_phase)
+            {
+                nextRightSpawnIndex = 1;
+
+                spawnPosition = right2SpawnPositions[currentRightSpawnIndex];
+                currentRightSpawnIndex++;
+                prefab = rhsPrefab;
+
+                nextSpawnPosition = rightSpawnPositions[nextRightSpawnIndex];
+                nextRightSpawnIndex = (nextRightSpawnIndex + 1) % rightSpawnPositions.Length;
+            }
+
+            
         }
 
         else // COOP
@@ -229,9 +252,6 @@ public class Spawner : MonoBehaviour
 
         }
 
-
-        //Vector3 lastSpawnPositionTemp = lastSpawnPosition;
-        //lastSpawnPosition = spawnPosition;
 
         ////Rotations:
         Vector3 rotation = new Vector3(90,0,0);
@@ -275,18 +295,10 @@ public class Spawner : MonoBehaviour
             rotation = new Vector3(90, 180, 0);
         }
 
-
-
-
-
-
-        //Vector3 spawnRotation = spawnRotations[currentRotationIndex];
         Quaternion finalrotation = Quaternion.Euler(rotation);
         Instantiate(prefab, spawnPosition, finalrotation);
         //Debug.Log("Spawned a " + side + " arrow at " + spawnPosition);
         
-
-        //currentRotationIndex = (currentRotationIndex + 1) % spawnRotations.Length;
     }
 
    
@@ -313,7 +325,7 @@ public class Spawner : MonoBehaviour
     void HandleArrowDestroyed(string side)
     {
 
-        audioSource.PlayOneShot(arrowDestroyedSound);
+        DestroyArrowSource.PlayOneShot(arrowDestroyedSound);
         if (side == "LHS" && !spawnCoopArrowsOnly)
         {
                 SpawnArrow("LHS");

@@ -4790,7 +4790,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1394704639}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 50, y: -0.40751472, z: 50}
+  m_LocalPosition: {x: 45.4, y: -0.40751472, z: 24.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -8119,9 +8119,9 @@ GameObject:
   - component: {fileID: 2012259396}
   - component: {fileID: 2012259397}
   - component: {fileID: 2012259398}
-  - component: {fileID: 2012259395}
   - component: {fileID: 2012259399}
   - component: {fileID: 2012259400}
+  - component: {fileID: 2012259395}
   m_Layer: 0
   m_Name: Spawner of Arrows
   m_TagString: Untagged
@@ -8144,8 +8144,8 @@ MonoBehaviour:
   lhsPrefab: {fileID: 4131812904386865606, guid: 1c9eb11f5be17ce44830145dc610b377, type: 3}
   rhsPrefab: {fileID: 1524000045193608662, guid: a9c9e0c95e9557f4a9bc975eb156493c, type: 3}
   cooperativeArrowPrefab: {fileID: 6537529040092933770, guid: dd6cf531a50a0df49bb5de4bda0d3494, type: 3}
-  audioSource: {fileID: 2012259398}
-  audioSource2: {fileID: 2012259399}
+  DestroyArrowSource: {fileID: 2012259398}
+  TutorialAudioSource: {fileID: 2012259399}
   arrowDestroyedSound: {fileID: 8300000, guid: aa05a120e4d9cef4b83e1ac0ef97362a, type: 3}
   tutorialSound: {fileID: 8300000, guid: 71b021cc49947fe4b8890500f553142b, type: 3}
   ObjectSong: {fileID: 2012259400}
@@ -8155,8 +8155,8 @@ MonoBehaviour:
   - {x: 34.6, y: -1.567744, z: 35}
   - {x: 25, y: -1.567744, z: 24.4}
   - {x: 25, y: -1.567744, z: 34.8}
-  - {x: 35.1, y: -1.567744, z: 34.9}
-  - {x: 25.2, y: -1.567744, z: 44.8}
+  - {x: 35.1, y: -1.567744, z: 34.8}
+  - {x: 25, y: -1.567744, z: 44.8}
   - {x: 34.4, y: -1.567744, z: 54.3}
   - {x: 34.4, y: -1.567744, z: 64.3}
   - {x: 34.4, y: -1.567744, z: 74.3}
@@ -8166,7 +8166,7 @@ MonoBehaviour:
   - {x: 65.4, y: -1.567744, z: 35}
   - {x: 75, y: -1.567744, z: 24.4}
   - {x: 75, y: -1.567744, z: 34.8}
-  - {x: 64.9, y: -1.567744, z: 34.9}
+  - {x: 64.9, y: -1.567744, z: 34.8}
   - {x: 74.8, y: -1.567744, z: 44.8}
   - {x: 65.6, y: -1.567744, z: 54.3}
   - {x: 65.6, y: -1.567744, z: 64.3}
@@ -8179,10 +8179,7 @@ MonoBehaviour:
   - {x: 45.1, y: 0, z: 45.4}
   - {x: 35.1, y: 0, z: 35.4}
   - {x: 25.1, y: 0, z: 25.4}
-  - {x: 15.1, y: 0, z: 15.4}
-  - {x: 5.1, y: 0, z: 5.4}
-  - {x: -4.9, y: 0, z: -4.6}
-  - {x: -14.9, y: 0, z: -14.6}
+  - {x: 25.1, y: 0, z: 15.4}
   right2SpawnPositions:
   - {x: 35.3, y: 0, z: 75.4}
   - {x: 45.3, y: 0, z: 65.4}
@@ -8191,9 +8188,6 @@ MonoBehaviour:
   - {x: 75.3, y: 0, z: 35.4}
   - {x: 85.3, y: 0, z: 25.4}
   - {x: 95.3, y: 0, z: 15.4}
-  - {x: 105.3, y: 0, z: 5.4}
-  - {x: 115.3, y: 0, z: -4.6}
-  - {x: 125.3, y: 0, z: -14.6}
 --- !u!4 &2012259396
 Transform:
   m_ObjectHideFlags: 0
