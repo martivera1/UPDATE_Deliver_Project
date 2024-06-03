@@ -6,6 +6,13 @@ MonoImporter:
   defaultReferences:
   - lhsPrefab: {fileID: 4131812904386865606, guid: 1c9eb11f5be17ce44830145dc610b377, type: 3}
   - rhsPrefab: {fileID: 1524000045193608662, guid: a9c9e0c95e9557f4a9bc975eb156493c, type: 3}
+  - cooperativeArrowPrefab: {fileID: 6537529040092933770, guid: dd6cf531a50a0df49bb5de4bda0d3494, type: 3}
+  - audioSource: {instanceID: 0}
+  - audioSource2: {instanceID: 0}
+  - arrowDestroyedSound: {instanceID: 0}
+  - tutorialSound: {instanceID: 0}
+  - ObjectSong: {instanceID: 0}
+  - song: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

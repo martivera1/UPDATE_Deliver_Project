@@ -15,6 +15,7 @@ public class Collision_with_arrow : MonoBehaviour
     private int count_players_colliding;
     public static event Action OnLastCoopArrowDestroyed;
     private static int coopArrowsDestroyed = 0;
+    
 
 
 
@@ -37,8 +38,6 @@ public class Collision_with_arrow : MonoBehaviour
 
             if (side == "COOP")
             {
-
-                
 
                 PlayerController playerController = GetComponent<PlayerController>();
                 if (playerController != null)
@@ -80,6 +79,9 @@ public class Collision_with_arrow : MonoBehaviour
                 }
 
                 Destroy(arrow);
+
+                
+
             }
         }
     }

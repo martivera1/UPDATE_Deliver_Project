@@ -12,7 +12,7 @@ public class ScoreManager : MonoBehaviour
     public delegate void ScoreChangedHandler(int playerNumber, int newScore);
     public static event ScoreChangedHandler OnScoreChanged;
     public static event System.Action OnCooperativePlayStart;
-    public static event Action<int> OnPlayerWins; // Evento para indicar qué jugador ha ganado
+    public static event Action<int> OnPlayerWins; // Evento para indicar quï¿½ jugador ha ganado
 
 
     public static void AddScore(int playerNumber, int points)

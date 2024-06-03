@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    //public GameObject myPrefab;
     public GameObject lhsPrefab;
     public GameObject rhsPrefab;
     public GameObject cooperativeArrowPrefab;
 
-    public AudioSource audioSource;
+    public AudioSource DestroyArrowSource; //destroy arrows
+    public AudioSource TutorialAudioSource; //tutorial audio source
     public AudioClip arrowDestroyedSound;
+    public AudioClip tutorialSound;
+
+    public AudioSource ObjectSong;
+    public AudioClip song;
 
     private Vector3 nextSpawnPosition;
+
+    private int nextLeftSpawnIndex = 1;
+    private int nextRightSpawnIndex = 1;
+    private int nextCoopSpawnIndex = 1;
 
 
 
@@ -21,8 +29,8 @@ public class Spawner : MonoBehaviour
     new Vector3(34.6f, -1.567744f, 35.0f),
     new Vector3(25.0f, -1.567744f, 24.4f),
     new Vector3(25.0f, -1.567744f, 34.8f),
-    new Vector3(35.1f, -1.567744f, 34.9f),
-    new Vector3(25.2f, -1.567744f, 44.8f),
+    new Vector3(35.1f, -1.567744f, 34.8f),
+    new Vector3(25.0f, -1.567744f, 44.8f),
     new Vector3(34.4f, -1.567744f, 54.3f),
     new Vector3(34.4f, -1.567744f, 64.3f),
     new Vector3(34.4f, -1.567744f, 74.3f),
@@ -36,26 +44,22 @@ public class Spawner : MonoBehaviour
     new Vector3(65.4f, -1.567744f, 35.0f),  
     new Vector3(75.0f, -1.567744f, 24.4f),  
     new Vector3(75.0f, -1.567744f, 34.8f),  
-    new Vector3(64.9f, -1.567744f, 34.9f),  
+    new Vector3(64.9f, -1.567744f, 34.8f),  
     new Vector3(74.8f, -1.567744f, 44.8f),  
     new Vector3(65.6f, -1.567744f, 54.3f),  
     new Vector3(65.6f, -1.567744f, 64.3f),  
     new Vector3(65.6f, -1.567744f, 74.3f),  
     new Vector3(65.6f, -1.567744f, 84.7f)   
-};
-
-
-    public Vector3[] spawnRotations = {
-        new Vector3(90, 0, 0),
-        new Vector3(90, 180, 0),
-        new Vector3(90, 270, 0)
     };
+
+
+   
 
     public static Vector3[] coopSpawnPositions = {
         new Vector3(55.8f, -1.567f, 75.4f),
         new Vector3(75.0f, 0.0f, 75.4f),
         new Vector3(75.0f, 0.0f, 55.2f),
-        new Vector3(74.5f, 0.0f, 34.9f),
+        new Vector3(75.0f, 0.0f, 34.9f),
         new Vector3(55.2f, 0.0f, 34.9f),
         new Vector3(35.4f, 0.0f, 35.2f),
         new Vector3(34.5f, -1.567f, 55.4f),
@@ -71,11 +75,16 @@ public class Spawner : MonoBehaviour
     new Vector3(45.1f, 0.0f, 45.4f),
     new Vector3(35.1f, 0.0f, 35.4f),
     new Vector3(25.1f, 0.0f, 25.4f),
-    new Vector3(15.1f, 0.0f, 15.4f),
-    new Vector3(5.1f, 0.0f, 5.4f),
-    new Vector3(-4.9f, 0.0f, -4.6f),
-    new Vector3(-14.9f, 0.0f, -14.6f)
-};
+    new Vector3(25.1f, 0.0f, 15.4f),
+    new Vector3(25.1f, 0.0f, 35.4f),
+    new Vector3(25.1f, 0.0f, 50.4f),
+    
+    //now they're at the center, starts static battle:
+    new Vector3(35.1f, 0.0f, 44.4f),
+    new Vector3(25.1f, 0.0f, 44.4f),
+    new Vector3(35.1f, 0.0f, 34.4f),
+    new Vector3(45.1f, 0.0f, 24.4f)
+    };
 
     public Vector3[] right2SpawnPositions = {
     new Vector3(35.3f, 0.0f, 75.4f),
@@ -85,28 +94,50 @@ public class Spawner : MonoBehaviour
     new Vector3(75.3f, 0.0f, 35.4f),
     new Vector3(85.3f, 0.0f, 25.4f),
     new Vector3(95.3f, 0.0f, 15.4f),
-    new Vector3(105.3f, 0.0f, 5.4f),
-    new Vector3(115.3f, 0.0f, -4.6f),
-    new Vector3(125.3f, 0.0f, -14.6f)
-};
+    new Vector3(95.3f, 0.0f, 35.4f),
+    new Vector3(95.3f, 0.0f, 50.4f),
+
+    //now they're at the center, starts another battle:
+    new Vector3(65.1f, 0.0f, 44.4f),
+    new Vector3(75.1f, 0.0f, 44.4f),
+    new Vector3(65.1f, 0.0f, 34.4f),
+    new Vector3(55.1f, 0.0f, 24.4f)
+    };
 
 
     private int currentLeftSpawnIndex = 0;
     private int currentRightSpawnIndex = 0;
     public static int currentCoopSpawnIndex = 0;
-    private int currentRotationIndex = 0;
+    
 
     private bool spawnCoopArrowsOnly = false;
     private bool second_phase = false;
     private bool first_phase = true;
 
+    private Vector3 lastSpawnPosition = Vector3.zero; //for determine the rotation
 
     // Event for arrow destruction
     public static event System.Action<string> OnArrowDestroyed;
 
-    // Start is called before the first frame update
+    
+
     void Start()
     {
+        TutorialAudioSource.clip = tutorialSound;
+        TutorialAudioSource.Play();
+
+        StartCoroutine(WaitForAudioToEnd());
+    }
+
+    private IEnumerator WaitForAudioToEnd()
+    {
+        // Esperar hasta que el audio termine de reproducirse
+        yield return new WaitWhile(() => TutorialAudioSource.isPlaying);
+
+
+        ObjectSong.clip = song;
+        ObjectSong.Play();
+        // Una vez que el audio ha terminado, ejecutar el resto del código
         Collision_with_arrow.OnArrowDestroyed += HandleArrowDestroyed;
         ScoreManager.OnCooperativePlayStart += StartCooperativePlay;
         Collision_with_arrow.OnLastCoopArrowDestroyed += EndCooperativePlay;
@@ -116,15 +147,11 @@ public class Spawner : MonoBehaviour
             SpawnArrow("LHS");
             SpawnArrow("RHS");
         }
-        
-        //SpawnArrow("COOP");
-
     }
-
 
     void OnDestroy()
     {
-        // Unsubscribe from the event when this object is destroyed to prevent memory leaks
+        
         Collision_with_arrow.OnArrowDestroyed -= HandleArrowDestroyed;
         ScoreManager.OnCooperativePlayStart -= StartCooperativePlay;
         Collision_with_arrow.OnLastCoopArrowDestroyed -= EndCooperativePlay;
@@ -151,24 +178,31 @@ public class Spawner : MonoBehaviour
                 return;
             }
 
-
-
-            if (second_phase)
-            {
-                spawnPosition = left2SpawnPositions[currentLeftSpawnIndex];
-                //currentLeftSpawnIndex = (currentLeftSpawnIndex + 1) % leftSpawnPositions.Length; <-- perq mai s'acabin de generar fletxes
-                currentLeftSpawnIndex++;
-                prefab = lhsPrefab;
-            }
-
             if (first_phase)
             {
                 spawnPosition = leftSpawnPositions[currentLeftSpawnIndex];
-                //currentLeftSpawnIndex = (currentLeftSpawnIndex + 1) % leftSpawnPositions.Length; <-- perq mai s'acabin de generar fletxes
                 currentLeftSpawnIndex++;
                 prefab = lhsPrefab;
 
+                nextSpawnPosition = leftSpawnPositions[nextLeftSpawnIndex];
+                nextLeftSpawnIndex = (nextLeftSpawnIndex + 1) % leftSpawnPositions.Length;
+
             }
+
+            if (second_phase)
+            {
+
+                nextLeftSpawnIndex = 1;
+
+                spawnPosition = left2SpawnPositions[currentLeftSpawnIndex];
+                currentLeftSpawnIndex++;
+                prefab = lhsPrefab;
+
+                nextSpawnPosition = leftSpawnPositions[nextLeftSpawnIndex];
+                nextLeftSpawnIndex = (nextLeftSpawnIndex + 1) % leftSpawnPositions.Length;
+            }
+
+            
             
         }
         else if (side == "RHS") // RHS
@@ -178,21 +212,30 @@ public class Spawner : MonoBehaviour
                 return;
             }
 
-            if (second_phase)
-            {
-                spawnPosition = right2SpawnPositions[currentRightSpawnIndex];
-                //currentRightSpawnIndex = (currentRightSpawnIndex + 1) % rightSpawnPositions.Length;
-                currentRightSpawnIndex++;
-                prefab = rhsPrefab;
-            }
-
             if (first_phase)
             {
                 spawnPosition = rightSpawnPositions[currentRightSpawnIndex];
-                //currentRightSpawnIndex = (currentRightSpawnIndex + 1) % rightSpawnPositions.Length;
                 currentRightSpawnIndex++;
                 prefab = rhsPrefab;
+
+                nextSpawnPosition = rightSpawnPositions[nextRightSpawnIndex];
+                nextRightSpawnIndex = (nextRightSpawnIndex + 1) % rightSpawnPositions.Length;
+
             }
+
+            if (second_phase)
+            {
+                nextRightSpawnIndex = 1;
+
+                spawnPosition = right2SpawnPositions[currentRightSpawnIndex];
+                currentRightSpawnIndex++;
+                prefab = rhsPrefab;
+
+                nextSpawnPosition = rightSpawnPositions[nextRightSpawnIndex];
+                nextRightSpawnIndex = (nextRightSpawnIndex + 1) % rightSpawnPositions.Length;
+            }
+
+            
         }
 
         else // COOP
@@ -200,19 +243,62 @@ public class Spawner : MonoBehaviour
             
             
             spawnPosition = coopSpawnPositions[currentCoopSpawnIndex];
-            //currentCoopSpawnIndex = (currentCoopSpawnIndex + 1) % coopSpawnPositions.Length ;
             currentCoopSpawnIndex++;
             prefab = cooperativeArrowPrefab;
+
+            nextSpawnPosition = coopSpawnPositions[nextCoopSpawnIndex];
+            nextCoopSpawnIndex = (nextCoopSpawnIndex + 1) % coopSpawnPositions.Length;
 
 
         }
 
-        Vector3 spawnRotation = spawnRotations[currentRotationIndex];
-        Quaternion rotation = Quaternion.Euler(spawnRotation);
-        Instantiate(prefab, spawnPosition, rotation);
-        Debug.Log("Spawned a " + side + " arrow at " + spawnPosition);
 
-        currentRotationIndex = (currentRotationIndex + 1) % spawnRotations.Length;
+        ////Rotations:
+        Vector3 rotation = new Vector3(90,0,0);
+
+        
+
+        if (spawnPosition.x < nextSpawnPosition.x && spawnPosition.z < nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 325, 0);
+        }
+        else if (spawnPosition.x < nextSpawnPosition.x && spawnPosition.z > nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 45, 0);
+        }
+        else if (spawnPosition.x > nextSpawnPosition.x && spawnPosition.z < nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 225, 0);
+        }
+        else if (spawnPosition.x > nextSpawnPosition.x && spawnPosition.z > nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 135, 0);
+        }
+
+        else if (spawnPosition.x == nextSpawnPosition.x && spawnPosition.z < nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 270, 0);
+        }
+
+        else if (spawnPosition.x == nextSpawnPosition.x && spawnPosition.z > nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 90, 0);
+        }
+
+        else if (spawnPosition.x < nextSpawnPosition.x && spawnPosition.z == nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 0, 0);
+        }
+
+        else if (spawnPosition.x > nextSpawnPosition.x && spawnPosition.z == nextSpawnPosition.z)
+        {
+            rotation = new Vector3(90, 180, 0);
+        }
+
+        Quaternion finalrotation = Quaternion.Euler(rotation);
+        Instantiate(prefab, spawnPosition, finalrotation);
+        //Debug.Log("Spawned a " + side + " arrow at " + spawnPosition);
+        
     }
 
    
@@ -227,7 +313,6 @@ public class Spawner : MonoBehaviour
 
     void EndCooperativePlay()
     {
-        // Cambia a la generación de flechas individuales
         spawnCoopArrowsOnly = false;
         second_phase = true;
         currentLeftSpawnIndex = 0;
@@ -240,7 +325,7 @@ public class Spawner : MonoBehaviour
     void HandleArrowDestroyed(string side)
     {
 
-        audioSource.PlayOneShot(arrowDestroyedSound);
+        DestroyArrowSource.PlayOneShot(arrowDestroyedSound);
         if (side == "LHS" && !spawnCoopArrowsOnly)
         {
                 SpawnArrow("LHS");
@@ -265,11 +350,7 @@ public class Spawner : MonoBehaviour
 
                 second_phase = true;
 
-                //SpawnArrow("LHS");
-
-                // Start spawning LHS and RHS arrows again
-                //SpawnArrow("LHS");
-                //SpawnArrow("RHS");
+               
 
             }
         }
