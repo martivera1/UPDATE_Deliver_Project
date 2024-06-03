@@ -37,10 +37,10 @@ public class ScoreManager : MonoBehaviour
                 OnPlayerWins?.Invoke(2); // Indicar que el jugador 1 ha ganado
             }
         }
-/*
+
         if (player1Score == 1000 && player2Score == 1000)
         {
             OnCooperativePlayStart?.Invoke();
-        }*/
+        }
     }
 }
