@@ -18,6 +18,10 @@ public class Spawner : MonoBehaviour
 
     private Vector3 nextSpawnPosition;
 
+    private int nextLeftSpawnIndex = 1;
+    private int nextRightSpawnIndex = 1;
+    private int nextCoopSpawnIndex = 1;
+
 
 
     public Vector3[] leftSpawnPositions = {
@@ -179,6 +183,9 @@ public class Spawner : MonoBehaviour
                 currentLeftSpawnIndex++;
                 prefab = lhsPrefab;
 
+                nextSpawnPosition = leftSpawnPositions[nextLeftSpawnIndex];
+                nextLeftSpawnIndex = (nextLeftSpawnIndex + 1) % leftSpawnPositions.Length;
+
             }
             
         }
@@ -201,6 +208,10 @@ public class Spawner : MonoBehaviour
                 spawnPosition = rightSpawnPositions[currentRightSpawnIndex];
                 currentRightSpawnIndex++;
                 prefab = rhsPrefab;
+
+                nextSpawnPosition = rightSpawnPositions[nextRightSpawnIndex];
+                nextRightSpawnIndex = (nextRightSpawnIndex + 1) % rightSpawnPositions.Length;
+
             }
         }
 
@@ -212,48 +223,54 @@ public class Spawner : MonoBehaviour
             currentCoopSpawnIndex++;
             prefab = cooperativeArrowPrefab;
 
+            nextSpawnPosition = coopSpawnPositions[nextCoopSpawnIndex];
+            nextCoopSpawnIndex = (nextCoopSpawnIndex + 1) % coopSpawnPositions.Length;
+
 
         }
 
-        //Rotations:
+
+        //Vector3 lastSpawnPositionTemp = lastSpawnPosition;
+        //lastSpawnPosition = spawnPosition;
+
+        ////Rotations:
         Vector3 rotation = new Vector3(90,0,0);
 
-        if (spawnPosition.x > lastSpawnPosition.x && spawnPosition.z > lastSpawnPosition.z)
+        
+
+        if (spawnPosition.x < nextSpawnPosition.x && spawnPosition.z < nextSpawnPosition.z)
         {
             rotation = new Vector3(90, 325, 0);
         }
-        else if (spawnPosition.x > lastSpawnPosition.x && spawnPosition.z < lastSpawnPosition.z)
+        else if (spawnPosition.x < nextSpawnPosition.x && spawnPosition.z > nextSpawnPosition.z)
         {
-            
             rotation = new Vector3(90, 45, 0);
         }
-        else if (spawnPosition.x < lastSpawnPosition.x && spawnPosition.z > lastSpawnPosition.z)
+        else if (spawnPosition.x > nextSpawnPosition.x && spawnPosition.z < nextSpawnPosition.z)
         {
-            
             rotation = new Vector3(90, 225, 0);
         }
-        else if (spawnPosition.x < lastSpawnPosition.x && spawnPosition.z < lastSpawnPosition.z)
+        else if (spawnPosition.x > nextSpawnPosition.x && spawnPosition.z > nextSpawnPosition.z)
         {
-            
             rotation = new Vector3(90, 135, 0);
         }
 
-        else if (spawnPosition.x == lastSpawnPosition.x && spawnPosition.z > lastSpawnPosition.z)
+        else if (spawnPosition.x == nextSpawnPosition.x && spawnPosition.z < nextSpawnPosition.z)
         {
             rotation = new Vector3(90, 270, 0);
         }
 
-        else if (spawnPosition.x == lastSpawnPosition.x && spawnPosition.z < lastSpawnPosition.z)
+        else if (spawnPosition.x == nextSpawnPosition.x && spawnPosition.z > nextSpawnPosition.z)
         {
             rotation = new Vector3(90, 90, 0);
         }
 
-        else if (spawnPosition.x > lastSpawnPosition.x && spawnPosition.z == lastSpawnPosition.z)
+        else if (spawnPosition.x < nextSpawnPosition.x && spawnPosition.z == nextSpawnPosition.z)
         {
             rotation = new Vector3(90, 0, 0);
         }
 
-        else if (spawnPosition.x < lastSpawnPosition.x && spawnPosition.z == lastSpawnPosition.z)
+        else if (spawnPosition.x > nextSpawnPosition.x && spawnPosition.z == nextSpawnPosition.z)
         {
             rotation = new Vector3(90, 180, 0);
         }
@@ -266,8 +283,8 @@ public class Spawner : MonoBehaviour
         //Vector3 spawnRotation = spawnRotations[currentRotationIndex];
         Quaternion finalrotation = Quaternion.Euler(rotation);
         Instantiate(prefab, spawnPosition, finalrotation);
-        Debug.Log("Spawned a " + side + " arrow at " + spawnPosition);
-        lastSpawnPosition = spawnPosition;
+        //Debug.Log("Spawned a " + side + " arrow at " + spawnPosition);
+        
 
         //currentRotationIndex = (currentRotationIndex + 1) % spawnRotations.Length;
     }
