@@ -43,8 +43,7 @@ public class ScoreManager : MonoBehaviour
 
         if (player1Score == 2450 && player2Score != 2450)
         {
-            //myCanvas.SetActive(true);
-            return;
+            SceneManager.LoadScene("PLAYER1WINS");
         }
 
         if (player2Score == 2450 && player1Score != 2450)
