@@ -93,9 +93,9 @@ public class Spawner : MonoBehaviour
     new Vector3(65.3f, 0.0f, 45.4f),
     new Vector3(75.3f, 0.0f, 35.4f),
     new Vector3(85.3f, 0.0f, 25.4f),
-    new Vector3(95.3f, 0.0f, 15.4f),
-    new Vector3(95.3f, 0.0f, 35.4f),
-    new Vector3(95.3f, 0.0f, 50.4f),
+    new Vector3(85.3f, 0.0f, 15.4f),
+    new Vector3(85.3f, 0.0f, 25.4f),
+    new Vector3(85.3f, 0.0f, 40.4f),
 
     //now they're at the center, starts another battle:
     new Vector3(65.1f, 0.0f, 44.4f),
@@ -113,6 +113,8 @@ public class Spawner : MonoBehaviour
     private bool spawnCoopArrowsOnly = false;
     private bool second_phase = false;
     private bool first_phase = true;
+    
+
 
     private Vector3 lastSpawnPosition = Vector3.zero; //for determine the rotation
 
@@ -120,6 +122,7 @@ public class Spawner : MonoBehaviour
     public static event System.Action<string> OnArrowDestroyed;
 
     
+
 
     void Start()
     {
@@ -178,6 +181,11 @@ public class Spawner : MonoBehaviour
                 return;
             }
 
+            if (currentLeftSpawnIndex >= left2SpawnPositions.Length)
+            {
+                return;
+            }
+
             if (first_phase)
             {
                 spawnPosition = leftSpawnPositions[currentLeftSpawnIndex];
@@ -192,15 +200,18 @@ public class Spawner : MonoBehaviour
             if (second_phase)
             {
 
-                nextLeftSpawnIndex = 1;
 
                 spawnPosition = left2SpawnPositions[currentLeftSpawnIndex];
                 currentLeftSpawnIndex++;
                 prefab = lhsPrefab;
 
-                nextSpawnPosition = leftSpawnPositions[nextLeftSpawnIndex];
-                nextLeftSpawnIndex = (nextLeftSpawnIndex + 1) % leftSpawnPositions.Length;
+                nextSpawnPosition = left2SpawnPositions[nextLeftSpawnIndex];
+                nextLeftSpawnIndex = (nextLeftSpawnIndex + 1) % left2SpawnPositions.Length;
+
+                
             }
+
+
 
             
             
@@ -208,6 +219,11 @@ public class Spawner : MonoBehaviour
         else if (side == "RHS") // RHS
         {
             if (currentRightSpawnIndex >= rightSpawnPositions.Length)
+            {
+                return;
+            }
+
+            if (currentRightSpawnIndex >= right2SpawnPositions.Length)
             {
                 return;
             }
@@ -225,17 +241,19 @@ public class Spawner : MonoBehaviour
 
             if (second_phase)
             {
-                nextRightSpawnIndex = 1;
+
 
                 spawnPosition = right2SpawnPositions[currentRightSpawnIndex];
                 currentRightSpawnIndex++;
                 prefab = rhsPrefab;
 
-                nextSpawnPosition = rightSpawnPositions[nextRightSpawnIndex];
-                nextRightSpawnIndex = (nextRightSpawnIndex + 1) % rightSpawnPositions.Length;
+                nextSpawnPosition = right2SpawnPositions[nextRightSpawnIndex];
+                nextRightSpawnIndex = (nextRightSpawnIndex + 1) % right2SpawnPositions.Length;
+
+                
             }
 
-            
+
         }
 
         else // COOP
@@ -307,6 +325,9 @@ public class Spawner : MonoBehaviour
     {
         Debug.Log("Received cooperative play start event");
         spawnCoopArrowsOnly = true;
+        currentLeftSpawnIndex = 0;
+        currentRightSpawnIndex = 0;
+        currentCoopSpawnIndex = 0;
         
         SpawnArrow("COOP");
     }
@@ -314,9 +335,12 @@ public class Spawner : MonoBehaviour
     void EndCooperativePlay()
     {
         spawnCoopArrowsOnly = false;
+        currentCoopSpawnIndex = 0;
         second_phase = true;
         currentLeftSpawnIndex = 0;
         currentRightSpawnIndex = 0;
+        nextLeftSpawnIndex = 1;
+        nextLeftSpawnIndex = 1;
         SpawnArrow("LHS");
         SpawnArrow("RHS");
     }
@@ -328,7 +352,7 @@ public class Spawner : MonoBehaviour
         DestroyArrowSource.PlayOneShot(arrowDestroyedSound);
         if (side == "LHS" && !spawnCoopArrowsOnly)
         {
-                SpawnArrow("LHS");
+            SpawnArrow("LHS");
 
         }
 
@@ -339,8 +363,10 @@ public class Spawner : MonoBehaviour
 
         else if (spawnCoopArrowsOnly)
         {
+            
             SpawnArrow("COOP");
             if (currentCoopSpawnIndex >= coopSpawnPositions.Length)
+            
             {
                 spawnCoopArrowsOnly = false;
                 first_phase = false;
@@ -356,9 +382,11 @@ public class Spawner : MonoBehaviour
         }
 
         
-       
-    }
 
-    
+                
+
+
+
+    }
 
 }

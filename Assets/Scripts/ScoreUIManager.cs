@@ -8,6 +8,8 @@ public class ScoreUIManager : MonoBehaviour
 {
     public Text player1ScoreText;
     public Text player2ScoreText;
+    //public GameObject myCanvas;
+
 
     void Start()
     {

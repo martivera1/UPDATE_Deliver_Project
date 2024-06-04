@@ -71,7 +71,6 @@ public class Collision_with_arrow : MonoBehaviour
             {
                 OnArrowDestroyed?.Invoke(side);
 
-                //update: Obtén el PlayerController del objeto que está colisionando con la flecha
                 PlayerController playerController = GetComponent<PlayerController>();
                 if (playerController != null)
                 {
@@ -96,7 +95,6 @@ public class Collision_with_arrow : MonoBehaviour
         if (playersCollided.Count == 2)
         {
             OnArrowDestroyed?.Invoke("COOP");
-            // Aquí necesitarás una referencia a la flecha cooperativa para poder destruirla
             GameObject coopArrow = GameObject.FindWithTag("Arrow");
             if (coopArrow != null)
             {

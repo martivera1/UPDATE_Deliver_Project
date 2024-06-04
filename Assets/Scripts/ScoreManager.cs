@@ -12,10 +12,12 @@ public class ScoreManager : MonoBehaviour
     public delegate void ScoreChangedHandler(int playerNumber, int newScore);
     public static event ScoreChangedHandler OnScoreChanged;
     public static event System.Action OnCooperativePlayStart;
-    public static event Action<int> OnPlayerWins; // Evento para indicar qu� jugador ha ganado
+
+
 
 
     public static void AddScore(int playerNumber, int points)
+    //public void AddScore(int playerNumber, int points)
     {
         if (playerNumber == 1)
         {
@@ -38,5 +40,21 @@ public class ScoreManager : MonoBehaviour
         {
             OnCooperativePlayStart?.Invoke();
         }
+
+        if (player1Score == 2450 && player2Score != 2450)
+        {
+            //myCanvas.SetActive(true);
+            return;
+        }
+
+        if (player2Score == 2450 && player1Score != 2450)
+        {
+            return;
+            
+        }
+
+
+
+
     }   
 }
