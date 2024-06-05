@@ -7721,8 +7721,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameras:
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 342261394}
+  - {fileID: 2041817079}
   enableTracking: 0
   numberOfPlayers: 2
   numberOfBaseStations: 4
@@ -7734,14 +7734,14 @@ MonoBehaviour:
   invertZ: 1
   unityWorldCenter: {x: 0, y: 0, z: 50}
   players:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 1440896347}
+  - {fileID: 1471923275}
+  - {fileID: 1865111049}
+  - {fileID: 1264190555}
+  - {fileID: 763629978}
+  - {fileID: 1554760525}
+  - {fileID: 483883237}
+  - {fileID: 1151668547}
   calibrationCenter: {x: 0, y: 0, z: 50}
   calibrationScale: 15.9
   calibrationSaveFilePath: D:/Unity_Tracking_Default_Config
