@@ -48,8 +48,8 @@ public class ScoreManager : MonoBehaviour
 
         if (player2Score == 2450 && player1Score != 2450)
         {
-            return;
-            
+            SceneManager.LoadScene("PLAYER2WINS");
+
         }
 
 
